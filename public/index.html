@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Share - Secure File & Text Sharing</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Safe Share</h1>
+            <p>Securely share files and text with client-side encryption</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="switchTab('text')">Text</button>
+                    <button class="tab-button" onclick="switchTab('file')">File</button>
+                </div>
+
+                <div id="text-tab" class="tab-content active">
+                    <h3>Share Text</h3>
+                    <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+                </div>
+
+                <div id="file-tab" class="tab-content">
+                    <h3>Share File</h3>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <p>Click to select file or drag and drop</p>
+                        <input type="file" id="fileInput" accept="*">
+                    </div>
+                    <div id="fileInfo" class="file-info"></div>
+                </div>
+
+                <div class="options">
+                    <label for="maxDownloads">Max Downloads:</label>
+                    <select id="maxDownloads">
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                    </select>
+                </div>
+
+                <button id="shareButton" class="share-button">
+                    <span id="shareButtonText">Share Securely</span>
+                    <div id="shareButtonLoader" class="loader hidden"></div>
+                </button>
+
+                <div id="result" class="result hidden">
+                    <h3>Share Link Generated!</h3>
+                    <div class="link-container">
+                        <input type="text" id="shareLink" readonly>
+                        <button onclick="copyLink()" class="copy-button">Copy</button>
+                    </div>
+                    <p class="warning">⚠️ Keep this link safe! The encryption key is in the URL and will be lost if not saved.</p>
+                    <p class="info">Downloads remaining: <span id="downloadsInfo"></span></p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>All encryption happens in your browser. The server never sees your data unencrypted.</p>
+        </footer>
+    </div>
+
+    <script src="/crypto-utils.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>
