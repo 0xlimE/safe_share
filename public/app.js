@@ -68,11 +68,15 @@ fileInput.addEventListener('change', (e) => {
 function handleFileSelect(file) {
     selectedFile = file;
     
+    // Use textContent to prevent XSS from malicious filenames
     fileInfo.innerHTML = `
-        <strong>Selected file:</strong> ${file.name}<br>
+        <strong>Selected file:</strong> <span class="filename"></span><br>
         <strong>Size:</strong> ${CryptoUtils.formatFileSize(file.size)}<br>
-        <strong>Type:</strong> ${file.type || 'Unknown'}
+        <strong>Type:</strong> <span class="filetype"></span>
     `;
+    // Safely set the filename and type using textContent
+    fileInfo.querySelector('.filename').textContent = file.name;
+    fileInfo.querySelector('.filetype').textContent = file.type || 'Unknown';
     fileInfo.style.display = 'block';
 }
 
@@ -153,7 +157,9 @@ async function shareContent(text, file, isText) {
         
     } catch (error) {
         console.error('Share error:', error);
-        alert('Error sharing content: ' + error.message);
+        // Sanitize error message to prevent potential XSS
+        const safeErrorMessage = (error.message || 'Unknown error').replace(/[<>&"']/g, '');
+        alert('Error sharing content: ' + safeErrorMessage);
     } finally {
         setLoading(false);
     }

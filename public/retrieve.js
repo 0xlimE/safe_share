@@ -130,7 +130,9 @@ downloadButton.addEventListener('click', async () => {
                     );
                 } catch (err) {
                     console.error('File decrypt error:', err);
-                    alert('Error decrypting file: ' + err.message);
+                    // Sanitize error message to prevent potential XSS
+                    const safeErrorMessage = (err.message || 'Unknown error').replace(/[<>&"']/g, '');
+                    alert('Error decrypting file: ' + safeErrorMessage);
                 }
             };
             
