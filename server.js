@@ -5,7 +5,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Storage for encrypted data with metadata
 const storage = new Map();
@@ -17,7 +17,7 @@ if (!fs.existsSync(dataDir)) {
 }
 
 // Middleware
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '100mb' }));
 app.use(express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, path) => {
         if (path.endsWith('.js')) {
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 
 // Configure multer for file uploads (but we'll mainly use JSON for encrypted data)
 const upload = multer({
-    limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit
+    limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
 });
 
 // Store encrypted data
