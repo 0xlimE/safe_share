@@ -5,6 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safe Share - Retrieve</title>
     <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Loading screen styles - inline to prevent FOUC */
+        #resource-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: opacity 0.3s ease;
+        }
+        
+        .resource-loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e3e6ea;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .resource-loader-text {
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .resource-retry-button {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .resource-retry-button:hover {
+            background: #0056b3;
+        }
+        
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Resource loading screen -->
+    <div id="resource-loader">
+        <div class="resource-loader-spinner"></div>
+        <div class="resource-loader-text">Loading Safe Share...</div>
+        <button class="resource-retry-button" onclick="retryResourceLoading()">Retry</button>
+    </div>
+
+    <!-- Main content (hidden until resources load) -->
+    <div id="main-content">
+        <div class="container">html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Share - Retrieve</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <div class="container">
@@ -64,8 +143,30 @@
             <p>Content is decrypted in your browser. The server never sees your data unencrypted.</p>
             <a href="/" class="back-link">← Create New Share</a>
         </footer>
+        </div>
     </div>
 
+    <!-- Resource loader (loads first) -->
+    <script src="/resource-loader.js"></script>
+    
+    <!-- Initialize resource loading -->
+    <script>
+        window.resourceLoader = new ResourceLoader();
+        window.resourceLoader.registerAssets(
+            ['/crypto-utils.js', '/retrieve.js'], // Scripts to wait for
+            ['/styles.css'] // Stylesheets to wait for
+        );
+        
+        // On retrieve page, also initialize the retrieve logic after loading
+        window.resourceLoader.onAllLoaded(() => {
+            // The retrieve.js initialize function will be called automatically
+            // when the script loads and DOMContentLoaded fires
+        });
+        
+        window.resourceLoader.startLoading();
+    </script>
+
+    <!-- Main application scripts -->
     <script src="/crypto-utils.js"></script>
     <script src="/retrieve.js"></script>
 </body>

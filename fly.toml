@@ -20,13 +20,13 @@ primary_region = "arn"
   processes = ["app"]
 
 [[http_service.checks]]
-  grace_period = "5s"
-  interval = "30s"
+  grace_period = "10s"
+  interval = "15s"
   method = "GET"
   path = "/"
   protocol = "http"
-  restart_limit = 3
-  timeout = "10s"
+  restart_limit = 5
+  timeout = "5s"
 
 [mounts]
   source = "safe_share_data"
@@ -35,7 +35,7 @@ primary_region = "arn"
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 256
+  memory_mb = 512
 
 [processes]
   app = "npm start"
