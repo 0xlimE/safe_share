@@ -77,72 +77,63 @@
 
     <!-- Main content (hidden until resources load) -->
     <div id="main-content">
-        <div class="container">html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Share - Retrieve</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🔒 Safe Share</h1>
-            <p>Decrypt and retrieve your shared content</p>
-        </header>
+        <div class="container">
+            <header>
+                <h1>🔒 Safe Share</h1>
+                <p>Decrypt and retrieve your shared content</p>
+            </header>
 
-        <main>
-            <div class="retrieve-section">
-                <div id="loading" class="loading">
-                    <div class="loader"></div>
-                    <p>Loading content...</p>
-                </div>
+            <main>
+                <div class="retrieve-section">
+                    <div id="loading" class="loading">
+                        <div class="loader"></div>
+                        <p>Loading content...</p>
+                    </div>
 
-                <div id="info" class="info-section hidden">
-                    <h3>Content Information</h3>
-                    <div class="content-info">
-                        <p><strong>Type:</strong> <span id="contentType"></span></p>
-                        <p><strong>Filename:</strong> <span id="filename"></span></p>
-                        <p><strong>Downloads:</strong> <span id="downloadCount"></span> / <span id="maxDownloads"></span></p>
-                        <p><strong>Remaining:</strong> <span id="remainingDownloads"></span></p>
+                    <div id="info" class="info-section hidden">
+                        <h3>Content Information</h3>
+                        <div class="content-info">
+                            <p><strong>Type:</strong> <span id="contentType"></span></p>
+                            <p><strong>Filename:</strong> <span id="filename"></span></p>
+                            <p><strong>Downloads:</strong> <span id="downloadCount"></span> / <span id="maxDownloads"></span></p>
+                            <p><strong>Remaining:</strong> <span id="remainingDownloads"></span></p>
+                        </div>
+                        
+                        <button id="downloadButton" class="download-button">
+                            <span id="downloadButtonText">Download & Decrypt</span>
+                            <div id="downloadButtonLoader" class="loader hidden"></div>
+                        </button>
+                        
+                        <div id="warningMessage" class="warning hidden">
+                            <p>⚠️ This is the last download available. The content will be permanently deleted after download.</p>
+                        </div>
                     </div>
-                    
-                    <button id="downloadButton" class="download-button">
-                        <span id="downloadButtonText">Download & Decrypt</span>
-                        <div id="downloadButtonLoader" class="loader hidden"></div>
-                    </button>
-                    
-                    <div id="warningMessage" class="warning hidden">
-                        <p>⚠️ This is the last download available. The content will be permanently deleted after download.</p>
-                    </div>
-                </div>
 
-                <div id="content" class="content-section hidden">
-                    <h3>Decrypted Content</h3>
-                    <div id="textContent" class="text-content hidden">
-                        <textarea id="decryptedText" readonly></textarea>
-                        <button onclick="copyText()" class="copy-button">Copy Text</button>
+                    <div id="content" class="content-section hidden">
+                        <h3>Decrypted Content</h3>
+                        <div id="textContent" class="text-content hidden">
+                            <textarea id="decryptedText" readonly></textarea>
+                            <button onclick="copyText()" class="copy-button">Copy Text</button>
+                        </div>
+                        
+                        <div id="fileContent" class="file-content hidden">
+                            <p><strong>File:</strong> <span id="decryptedFilename"></span></p>
+                            <button id="downloadFileButton" class="download-file-button">Download File</button>
+                        </div>
                     </div>
-                    
-                    <div id="fileContent" class="file-content hidden">
-                        <p><strong>File:</strong> <span id="decryptedFilename"></span></p>
-                        <button id="downloadFileButton" class="download-file-button">Download File</button>
+
+                    <div id="error" class="error-section hidden">
+                        <h3>Error</h3>
+                        <p id="errorMessage"></p>
+                        <a href="/" class="back-link">← Create New Share</a>
                     </div>
                 </div>
+            </main>
 
-                <div id="error" class="error-section hidden">
-                    <h3>Error</h3>
-                    <p id="errorMessage"></p>
-                    <a href="/" class="back-link">← Create New Share</a>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <p>Content is decrypted in your browser. The server never sees your data unencrypted.</p>
-            <a href="/" class="back-link">← Create New Share</a>
-        </footer>
+            <footer>
+                <p>Content is decrypted in your browser. The server never sees your data unencrypted.</p>
+                <a href="/" class="back-link">← Create New Share</a>
+            </footer>
         </div>
     </div>
 
