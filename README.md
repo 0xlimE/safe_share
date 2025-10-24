@@ -42,8 +42,6 @@ Or use the included Dockerfile for custom deployments.
 - The server only stores encrypted data and metadata (filename, download count)
 - Encryption keys are 256-bit AES-GCM with randomly generated IVs
 - Files are automatically deleted after reaching the download limit
-- UUID validation prevents path traversal attacks
-- Filenames are sanitized to prevent filesystem exploits
 
 ## API endpoints
 
@@ -106,7 +104,3 @@ Download encrypted content (increments download counter).
 ## License
 
 Apache 2.0
-
-## Contributing
-
-Found a bug or want to add a feature? Pull requests welcome.
