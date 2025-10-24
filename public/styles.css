@@ -37,6 +37,30 @@ header p {
     opacity: 0.9;
 }
 
+.security-notice {
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.security-notice p {
+    margin: 8px 0;
+}
+
+.security-notice a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.security-notice a:hover {
+    opacity: 0.8;
+}
+
 main {
     flex: 1;
 }

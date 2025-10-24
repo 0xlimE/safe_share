@@ -33,6 +33,27 @@ const upload = multer({
     limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit
 });
 
+// Helper function to validate UUID format
+function isValidUUID(id) {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+}
+
+// Helper function to sanitize filename
+function sanitizeFilename(filename) {
+    if (!filename || typeof filename !== 'string') {
+        return 'shared_content';
+    }
+    // Remove path traversal, null bytes, and dangerous characters
+    return filename
+        .replace(/[\/\\]/g, '_')     // Replace slashes
+        .replace(/\0/g, '')           // Remove null bytes
+        .replace(/[<>:"|?*]/g, '_')   // Replace Windows reserved chars
+        .replace(/\.\./g, '_')        // Replace .. sequences
+        .substring(0, 255)            // Limit length
+        .trim();
+}
+
 // Store encrypted data
 app.post('/api/store', (req, res) => {
     try {
@@ -42,13 +63,22 @@ app.post('/api/store', (req, res) => {
             return res.status(400).json({ error: 'No encrypted data provided' });
         }
 
+        // Validate maxDownloads
+        const maxDownloadsInt = parseInt(maxDownloads);
+        if (isNaN(maxDownloadsInt) || maxDownloadsInt < 1 || maxDownloadsInt > 100) {
+            return res.status(400).json({ error: 'Invalid maxDownloads value (must be between 1 and 100)' });
+        }
+
+        // Sanitize filename
+        const sanitizedFilename = sanitizeFilename(filename) || 'shared_content';
+
         const id = uuidv4();
         const item = {
             id,
             encryptedData,
-            filename: filename || 'shared_content',
+            filename: sanitizedFilename,
             isText: isText || false,
-            maxDownloads: parseInt(maxDownloads),
+            maxDownloads: maxDownloadsInt,
             downloads: 0,
             createdAt: new Date()
         };
@@ -69,8 +99,17 @@ app.post('/api/store', (req, res) => {
 app.get('/api/retrieve/:id', (req, res) => {
     try {
         const { id } = req.params;
+        
+        // Validate UUID format to prevent path traversal
+        if (!isValidUUID(id)) {
+            return res.status(400).json({ error: 'Invalid ID format' });
+        }
+        
         let item = storage.get(id);
-
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) {
+            return res.status(404).json({ error: 'Content not found' });
+        }
         // Try to load from disk if not in memory
         if (!item) {
             const filePath = path.join(dataDir, `${id}.json`);
@@ -130,8 +169,18 @@ app.get('/api/retrieve/:id', (req, res) => {
 app.get('/api/info/:id', (req, res) => {
     try {
         const { id } = req.params;
+        
+        // Validate UUID format to prevent path traversal
+        if (!isValidUUID(id)) {
+            return res.status(400).json({ error: 'Invalid ID format' });
+        }
+        
         let item = storage.get(id);
-
+        // Verify id is a valid UUID
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(id)) {
+            return res.status(404).json({ error: 'Content not found' });
+        }
         // Try to load from disk if not in memory
         if (!item) {
             const filePath = path.join(dataDir, `${id}.json`);
