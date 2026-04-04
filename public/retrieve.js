@@ -120,21 +120,56 @@ downloadButton.addEventListener('click', async () => {
             // Prepare file download
             decryptedFilename.textContent = data.filename;
             
-            downloadFileButton.onclick = async () => {
+            const isPdf = data.filename && data.filename.toLowerCase().endsWith('.pdf');
+            
+            if (isPdf) {
+                // Preview PDF in browser
                 try {
-                    await CryptoUtils.decryptFile(
+                    const decryptedBuffer = await CryptoUtils.decryptData(
                         data.encryptedData,
                         cryptoKey,
-                        cryptoIV,
-                        data.filename
+                        cryptoIV
                     );
+                    const blob = new Blob([decryptedBuffer], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const pdfPreview = document.getElementById('pdfPreview');
+                    const pdfFrame = document.getElementById('pdfFrame');
+                    const downloadPdfButton = document.getElementById('downloadPdfButton');
+                    
+                    pdfFrame.src = url;
+                    pdfPreview.classList.remove('hidden');
+                    downloadFileButton.classList.add('hidden');
+                    
+                    downloadPdfButton.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = data.filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    };
                 } catch (err) {
-                    console.error('File decrypt error:', err);
-                    // Sanitize error message to prevent potential XSS
+                    console.error('PDF preview error:', err);
                     const safeErrorMessage = (err.message || 'Unknown error').replace(/[<>&"']/g, '');
-                    alert('Error decrypting file: ' + safeErrorMessage);
+                    alert('Error previewing PDF: ' + safeErrorMessage);
                 }
-            };
+            } else {
+                downloadFileButton.onclick = async () => {
+                    try {
+                        await CryptoUtils.decryptFile(
+                            data.encryptedData,
+                            cryptoKey,
+                            cryptoIV,
+                            data.filename
+                        );
+                    } catch (err) {
+                        console.error('File decrypt error:', err);
+                        const safeErrorMessage = (err.message || 'Unknown error').replace(/[<>&"']/g, '');
+                        alert('Error decrypting file: ' + safeErrorMessage);
+                    }
+                };
+            }
             
             fileContent.classList.remove('hidden');
         }
